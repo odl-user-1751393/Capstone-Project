@@ -3,12 +3,12 @@ import re
 import subprocess
 import asyncio
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
 from semantic_kernel.agents import AgentGroupChat, ChatCompletionAgent
 from semantic_kernel.agents.strategies.termination.termination_strategy import TerminationStrategy
-from semantic_kernel.agents.strategies.selection.kernel_function_selection_strategy import (
-    KernelFunctionSelectionStrategy,
-)
-from semantic_kernel.connectors.ai.function_choice_behavior import FunctionChoiceBehavior
 from semantic_kernel.connectors.ai.open_ai.services.azure_chat_completion import AzureChatCompletion
 from semantic_kernel.contents.chat_message_content import ChatMessageContent
 from semantic_kernel.contents.utils.author_role import AuthorRole
@@ -31,7 +31,7 @@ You are the Product Owner which will review the software engineer's code to ensu
 class ApprovalTerminationStrategy(TerminationStrategy):
     async def should_agent_terminate(self, agent, history):
         for message in history:
-            if message.author_role == AuthorRole.USER and "APPROVED" in message.content.upper():
+            if message.role == AuthorRole.USER and "APPROVED" in message.content.upper():
                 return True
         return False
 
@@ -56,13 +56,13 @@ async def run_multi_agent(user_input: str):
     kernel = Kernel()
     kernel.add_service(
         AzureChatCompletion(
-            deployment_name=os.environ["AZURE_DEPLOYMENT_NAME"],
+            deployment_name=os.environ["AZURE_OPENAI_CHAT_DEPLOYMENT_NAME"],
             endpoint=os.environ["AZURE_OPENAI_ENDPOINT"],
             api_key=os.environ["AZURE_OPENAI_API_KEY"]
         )
     )
 
-    # Create agents
+    # Create agents with proper personas and names
     business_analyst = ChatCompletionAgent(
         kernel=kernel,
         name="BusinessAnalystAgent",
@@ -81,20 +81,33 @@ async def run_multi_agent(user_input: str):
         instructions=PRODUCT_OWNER_PROMPT
     )
 
-    # Group chat setup
+    # Create AgentGroupChat with termination_strategy passed in constructor
     group = AgentGroupChat(
         agents=[business_analyst, software_engineer, product_owner],
-        execution_settings={"termination": ApprovalTerminationStrategy()},
+        termination_strategy=ApprovalTerminationStrategy()
     )
 
-    # Start chat
-    messages = await group.chat(ChatMessageContent.from_user(user_input))
+    # DO NOT try to set group.execution_settings.termination (does not exist)
 
-    # After termination condition
+    # Add the initial user message
+    await group.add_chat_message(
+        ChatMessageContent(
+            role="user",
+            author_role=AuthorRole.USER,
+            content=user_input
+        )
+    )
+
+    # Run the multi-agent chat loop asynchronously
+    messages = []
+    async for content in group.invoke():
+        print(f"# {content.role} - {content.name or '*'}: '{content.content}'")
+        messages.append(content)
+
+    # After termination condition is met (ApprovalTerminationStrategy triggers)
     html_code = extract_html_code_from_messages(messages)
     if html_code.strip():
         save_html_to_file(html_code)
         subprocess.run(["bash", "push_to_github.sh"], check=True)
-
 
     return messages
