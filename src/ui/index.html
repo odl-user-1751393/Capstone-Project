@@ -1,119 +1,165 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Simple Calculator</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      margin: 0;
-      padding: 0;
-      background-color: #f7f7f7;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Calculator</title>
+    <style>
+        /* Calculator Styles */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
 
-    .calculator {
-      display: inline-block;
-      margin-top: 50px;
-      padding: 20px;
-      background: white;
-      border: 1px solid #ccc;
-      border-radius: 10px;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    }
+        .calculator {
+            width: 300px;
+            background: #fff;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+        }
 
-    .calculator input,
-    .calculator select,
-    .calculator button {
-      margin: 10px 0;
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      font-size: 16px;
-      width: 100%;
-    }
+        .display {
+            width: 100%;
+            height: 50px;
+            margin-bottom: 1rem;
+            border: none;
+            background: #eaeaea;
+            font-size: 1.5rem;
+            text-align: right;
+            line-height: 50px;
+            padding-right: 10px;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
 
-    #result {
-      margin-top: 20px;
-      font-size: 18px;
-      color: #333;
-    }
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
 
-    #error {
-      margin-top: 10px;
-      font-size: 16px;
-      color: red;
-    }
-  </style>
+        .button {
+            height: 50px;
+            font-size: 1.2rem;
+            background: #2196F3;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .button:active {
+            background: #1565c0;
+        }
+
+        .operation {
+            background: #f57c00;
+        }
+
+        .operation:active {
+            background: #e64a19;
+        }
+    </style>
 </head>
 <body>
-  <div class="calculator">
-    <h1>Simple Calculator</h1>
-    <input type="number" id="num1" placeholder="Enter first number">
-    <input type="number" id="num2" placeholder="Enter second number">
-    <select id="operation">
-      <option value="add">Addition (+)</option>
-      <option value="subtract">Subtraction (-)</option>
-      <option value="multiply">Multiplication (×)</option>
-      <option value="divide">Division (÷)</option>
-    </select>
-    <button id="computeBtn">Compute</button>
-    <div id="result"></div>
-    <div id="error"></div>
-  </div>
+    <div class="calculator">
+        <input type="text" class="display" id="calc-display" readonly />
+        <div class="buttons">
+            <button class="button" data-number="7">7</button>
+            <button class="button" data-number="8">8</button>
+            <button class="button" data-number="9">9</button>
+            <button class="button operation" data-operator="/">÷</button>
 
-  <script>
-    // Adding event listener to the "Compute" button
-    document.getElementById("computeBtn").addEventListener("click", function () {
-      const num1 = parseFloat(document.getElementById("num1").value);
-      const num2 = parseFloat(document.getElementById("num2").value);
-      const operation = document.getElementById("operation").value;
+            <button class="button" data-number="4">4</button>
+            <button class="button" data-number="5">5</button>
+            <button class="button" data-number="6">6</button>
+            <button class="button operation" data-operator="*">×</button>
 
-      const resultDiv = document.getElementById("result");
-      const errorDiv = document.getElementById("error");
+            <button class="button" data-number="1">1</button>
+            <button class="button" data-number="2">2</button>
+            <button class="button" data-number="3">3</button>
+            <button class="button operation" data-operator="-">−</button>
 
-      // Clear previous results and errors
-      resultDiv.textContent = '';
-      errorDiv.textContent = '';
+            <button class="button" data-number="0">0</button>
+            <button class="button" data-number=".">.</button>
+            <button class="button operation" data-operator="=">=</button>
+            <button class="button operation" data-operator="+">+</button>
+        </div>
+        <button class="button operation" style="width: 100%; margin-top: 10px;" data-clear="true">C</button>
+    </div>
+    <script>
+        // JavaScript Logic for Calculator
 
-      // Input validation
-      if (isNaN(num1) || isNaN(num2)) {
-        errorDiv.textContent = "Please enter valid numbers.";
-        return;
-      }
+        const display = document.getElementById('calc-display');
+        const buttons = document.querySelectorAll('.button');
 
-      // Perform the chosen operation
-      let result;
-      switch (operation) {
-        case "add":
-          result = num1 + num2;
-          break;
+        let currentInput = ''; // Numbers/user input
+        let previousInput = ''; // Input before an operator
+        let operator = null; // Current operator
 
-        case "subtract":
-          result = num1 - num2;
-          break;
+        function updateDisplay(value) {
+            display.value = value !== undefined ? value : currentInput || '0';
+        }
 
-        case "multiply":
-          result = num1 * num2;
-          break;
+        buttons.forEach(button => {
+            button.addEventListener('click', () => {
+                const number = button.dataset.number;
+                const operatorClicked = button.dataset.operator;
+                const clearClicked = button.dataset.clear;
 
-        case "divide":
-          if (num2 === 0) {
-            errorDiv.textContent = "Error: Division by zero is not allowed.";
-            return;
-          }
-          result = num1 / num2;
-          break;
+                // Handle numbers including decimal point
+                if (number) {
+                    if (number === '.' && currentInput.includes('.')) return; // Prevent multiple decimals
+                    currentInput += number;
+                    updateDisplay();
+                } 
 
-        default:
-          errorDiv.textContent = "Invalid operation.";
-          return;
-      }
+                // Handle operator logic
+                if (operatorClicked) {
+                    if (operatorClicked === '=') {
+                        if (previousInput && operator && currentInput) {
+                            const result = calculate(Number(previousInput), operator, Number(currentInput));
+                            updateDisplay(result);
+                            previousInput = result;
+                            operator = null;
+                            currentInput = '';
+                        }
+                    } else {
+                        if (currentInput) previousInput = currentInput; // Store current as previous
+                        operator = operatorClicked;
+                        currentInput = '';
+                    }
+                }
 
-      // Display the result
-      resultDiv.textContent = `Result: ${result}`;
-    });
-  </script>
+                // Handle clear logic
+                if (clearClicked) {
+                    currentInput = '';
+                    previousInput = '';
+                    operator = null;
+                    updateDisplay();
+                }
+            });
+        });
+
+        function calculate(num1, operator, num2) {
+            switch (operator) {
+                case '+': return num1 + num2;
+                case '-': return num1 - num2;
+                case '*': return num1 * num2;
+                case '/': return num2 === 0 ? 'Error' : num1 / num2;
+                default: return 'Error';
+            }
+        }
+
+        // Initialize
+        updateDisplay();
+    </script>
 </body>
 </html>
