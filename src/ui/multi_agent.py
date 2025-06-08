@@ -31,18 +31,21 @@ You are the Product Owner which will review the software engineer's code to ensu
 class ApprovalTerminationStrategy(TerminationStrategy):
     async def should_agent_terminate(self, agent, history):
         for message in history:
-            if message.role == AuthorRole.USER and "APPROVED" in message.content.upper():
+            if (
+                message.role == "assistant"
+                and "APPROVED" in message.content.upper()
+            ):
                 return True
         return False
 
 # === HTML Extraction and Save ===
 def extract_html_code_from_messages(messages, agent_name="SoftwareEngineerAgent"):
     html_codes = []
-    pattern = re.compile(r"```html\\s*(.*?)```", re.DOTALL | re.IGNORECASE)
+    pattern = re.compile(r"```html\s*(.*?)```", re.DOTALL | re.IGNORECASE)
 
     for msg in messages:
-        if msg.agent_name == agent_name:
-            matches = pattern.findall(msg.content)
+        if msg.get("agent_name") == agent_name:
+            matches = pattern.findall(msg.get("content", ""))
             html_codes.extend(matches)
 
     return "\n".join(html_codes)
@@ -101,8 +104,16 @@ async def run_multi_agent(user_input: str):
     # Run the multi-agent chat loop asynchronously
     messages = []
     async for content in group.invoke():
+        author_role = getattr(content, "author_role", None)
+        author_role_name = author_role.name if author_role else None
+
         print(f"# {content.role} - {content.name or '*'}: '{content.content}'")
-        messages.append(content)
+        messages.append({
+            "content": content.content,
+            "agent_name": content.name,
+            "role": content.role,
+            "author_role": author_role_name,
+        })
 
     # After termination condition is met (ApprovalTerminationStrategy triggers)
     html_code = extract_html_code_from_messages(messages)
