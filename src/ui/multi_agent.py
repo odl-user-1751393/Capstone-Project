@@ -32,7 +32,7 @@ class ApprovalTerminationStrategy(TerminationStrategy):
     async def should_agent_terminate(self, agent, history):
         for message in history:
             if (
-                message.role == "assistant"
+                message.role == "user"
                 and "APPROVED" in message.content.upper()
             ):
                 return True
