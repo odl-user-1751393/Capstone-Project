@@ -1,5 +1,6 @@
 import os
 import re
+import platform
 import subprocess
 import asyncio
 
@@ -32,8 +33,8 @@ class ApprovalTerminationStrategy(TerminationStrategy):
     async def should_agent_terminate(self, agent, history):
         for message in history:
             if (
-                message.role == "user"
-                and "APPROVED" in message.content.upper()
+                message.role == "assistant"
+                and "READY FOR USER APPROVAL" in message.content.upper()
             ):
                 return True
         return False
@@ -53,6 +54,14 @@ def extract_html_code_from_messages(messages, agent_name="SoftwareEngineerAgent"
 def save_html_to_file(html_code, filename="index.html"):
     with open(filename, "w", encoding="utf-8") as f:
         f.write(html_code)
+
+# === Helper to check OS ===
+def push_code():
+    if platform.system() == "Windows":
+        bash_path = r"C:\Program Files\Git\bin\bash.exe"  # Adjust if needed
+        subprocess.run([bash_path, "push_to_github.sh"], check=True)
+    else:
+        subprocess.run(["bash", "push_to_github.sh"], check=True)
 
 # === Main Multi-Agent Logic ===
 async def run_multi_agent(user_input: str):
@@ -103,11 +112,14 @@ async def run_multi_agent(user_input: str):
 
     # Run the multi-agent chat loop asynchronously
     messages = []
+    ready_for_approval = False
+
     async for content in group.invoke():
         author_role = getattr(content, "author_role", None)
         author_role_name = author_role.name if author_role else None
 
         print(f"# {content.role} - {content.name or '*'}: '{content.content}'")
+
         messages.append({
             "content": content.content,
             "agent_name": content.name,
@@ -115,10 +127,25 @@ async def run_multi_agent(user_input: str):
             "author_role": author_role_name,
         })
 
+        if (
+            content.role == "assistant"
+            and content.name == "ProductOwnerAgent"
+            and "READY FOR USER APPROVAL" in content.content.upper()
+        ):
+            ready_for_approval = True
+            break  # stop the loop here and wait for actual user input
+
     # After termination condition is met (ApprovalTerminationStrategy triggers)
-    html_code = extract_html_code_from_messages(messages)
-    if html_code.strip():
-        save_html_to_file(html_code)
-        subprocess.run(["bash", "push_to_github.sh"], check=True)
+    if ready_for_approval:
+        print("\n💬 Awaiting USER APPROVAL... (type 'APPROVED' to continue)")
+        user_approval = input(">>> ").strip().upper()
+        if user_approval == "APPROVED":
+            html_code = extract_html_code_from_messages(messages)
+            if html_code.strip():
+                save_html_to_file(html_code)
+                push_code()  # call the helper
+            print("✅ Code saved and pushed to GitHub!")
+        else:
+            print("❌ Approval not received. Aborting.")
 
     return messages
