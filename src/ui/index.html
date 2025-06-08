@@ -4,97 +4,37 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Simple Calculator</title>
-  <style>
-    /* Basic CSS for styling the Calculator */
-    body {
-      font-family: Arial, sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-      background-color: #f0f0f0;
-    }
-
-    .calculator {
-      width: 300px;
-      background: #fff;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      overflow: hidden;
-    }
-
-    .screen {
-      width: 100%;
-      height: 70px;
-      background: #222;
-      color: #fff;
-      text-align: right;
-      line-height: 70px;
-      font-size: 2em;
-      padding: 0 10px;
-    }
-
-    .buttons {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 5px;
-      padding: 10px;
-    }
-
-    button {
-      height: 50px;
-      font-size: 1.5em;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-
-    .number {
-      background: #e0e0e0;
-    }
-
-    .operator {
-      background: #ff9500;
-      color: #fff;
-    }
-
-    .clear {
-      background: #ff3b30;
-      color: #fff;
-    }
-
-    .equals {
-      background: #34c759;
-      color: #fff;
-      grid-column: span 4;
-      height: 60px;
-    }
-  </style>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <div class="calculator">
-    <div class="screen" id="screen">0</div>
+    <div id="display" class="display">0</div>
     <div class="buttons">
-      <!-- Number Buttons -->
-      <button class="number">7</button>
-      <button class="number">8</button>
-      <button class="number">9</button>
-      <button class="operator">÷</button>
-      <button class="number">4</button>
-      <button class="number">5</button>
-      <button class="number">6</button>
-      <button class="operator">×</button>
-      <button class="number">1</button>
-      <button class="number">2</button>
-      <button class="number">3</button>
-      <button class="operator">−</button>
-      <button class="clear">C</button>
-      <button class="number">0</button>
-      <button class="operator">+</button>
-      <button class="equals">=</button>
+      <button onclick="clearDisplay()" class="btn-clear">C</button>
+      <button onclick="backspace()" class="btn-backspace">←</button>
+      <button onclick="appendOperator('/')" class="btn-operator">÷</button>
+      <button onclick="appendOperator('*')" class="btn-operator">×</button>
+      
+      <button onclick="appendNumber('7')" class="btn-number">7</button>
+      <button onclick="appendNumber('8')" class="btn-number">8</button>
+      <button onclick="appendNumber('9')" class="btn-number">9</button>
+      <button onclick="appendOperator('-')" class="btn-operator">−</button>
+      
+      <button onclick="appendNumber('4')" class="btn-number">4</button>
+      <button onclick="appendNumber('5')" class="btn-number">5</button>
+      <button onclick="appendNumber('6')" class="btn-number">6</button>
+      <button onclick="appendOperator('+')" class="btn-operator">+</button>
+      
+      <button onclick="appendNumber('1')" class="btn-number">1</button>
+      <button onclick="appendNumber('2')" class="btn-number">2</button>
+      <button onclick="appendNumber('3')" class="btn-number">3</button>
+      <button onclick="calculate()" class="btn-equal">=</button>
+      
+      <button onclick="appendNumber('0')" class="btn-number zero">0</button>
+      <button onclick="appendDecimal()" class="btn-number">.</button>
     </div>
   </div>
+  <script src="script.js"></script>
 </body>
 </html>
 
@@ -104,158 +44,37 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Simple Calculator</title>
-  <style>
-    /* CSS for Calculator Styling */
-    body {
-      font-family: Arial, sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-      background-color: #f0f0f0;
-    }
-
-    .calculator {
-      width: 300px;
-      background-color: #fff;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      overflow: hidden;
-    }
-
-    .screen {
-      width: 100%;
-      height: 70px;
-      background: #222;
-      color: #fff;
-      text-align: right;
-      line-height: 70px;
-      font-size: 2em;
-      padding: 0 10px;
-    }
-
-    .buttons {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 5px;
-      padding: 10px;
-    }
-
-    button {
-      height: 50px;
-      font-size: 1.5em;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-
-    .number {
-      background-color: #e0e0e0;
-    }
-
-    .operator {
-      background-color: #ff9500;
-      color: white;
-    }
-
-    .clear {
-      background-color: #ff3b30;
-      color: white;
-    }
-
-    .equals {
-      background-color: #34c759;
-      color: white;
-      grid-column: span 4;
-      height: 60px;
-    }
-  </style>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <div class="calculator">
-    <div class="screen" id="screen">0</div>
+    <div id="display" class="display">0</div>
     <div class="buttons">
-      <!-- Buttons for Numbers and Operators -->
-      <button class="number">7</button>
-      <button class="number">8</button>
-      <button class="number">9</button>
-      <button class="operator">÷</button>
-      <button class="number">4</button>
-      <button class="number">5</button>
-      <button class="number">6</button>
-      <button class="operator">×</button>
-      <button class="number">1</button>
-      <button class="number">2</button>
-      <button class="number">3</button>
-      <button class="operator">−</button>
-      <button class="clear">C</button>
-      <button class="number">0</button>
-      <button class="operator">+</button>
-      <button class="equals">=</button>
+      <button onclick="clearDisplay()" class="btn-clear">C</button>
+      <button onclick="backspace()" class="btn-backspace">←</button>
+      <button onclick="appendOperator('/')" class="btn-operator">÷</button>
+      <button onclick="appendOperator('*')" class="btn-operator">×</button>
+      
+      <button onclick="appendNumber('7')" class="btn-number">7</button>
+      <button onclick="appendNumber('8')" class="btn-number">8</button>
+      <button onclick="appendNumber('9')" class="btn-number">9</button>
+      <button onclick="appendOperator('-')" class="btn-operator">−</button>
+      
+      <button onclick="appendNumber('4')" class="btn-number">4</button>
+      <button onclick="appendNumber('5')" class="btn-number">5</button>
+      <button onclick="appendNumber('6')" class="btn-number">6</button>
+      <button onclick="appendOperator('+')" class="btn-operator">+</button>
+      
+      <button onclick="appendNumber('1')" class="btn-number">1</button>
+      <button onclick="appendNumber('2')" class="btn-number">2</button>
+      <button onclick="appendNumber('3')" class="btn-number">3</button>
+      <button onclick="calculate()" class="btn-equal">=</button>
+      
+      <button onclick="appendNumber('0')" class="btn-number zero">0</button>
+      <button onclick="appendDecimal()" class="btn-number">.</button>
     </div>
   </div>
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const screen = document.getElementById("screen");
-      let currentInput = "";
-      let previousInput = "";
-      let operator = "";
-
-      // Function to update the calculator screen
-      const updateScreen = (value) => {
-        screen.textContent = value;
-      };
-
-      // Adding event listeners to all buttons
-      const buttons = document.querySelectorAll("button");
-      buttons.forEach((button) => {
-        button.addEventListener("click", () => {
-          const buttonType = button.className.split(' ')[0];
-          const buttonValue = button.textContent;
-
-          if (buttonType === "number") {
-            currentInput += buttonValue;
-            updateScreen(currentInput);
-          } else if (buttonType === "operator") {
-            operator = buttonValue;
-            previousInput = currentInput;
-            currentInput = "";
-          } else if (buttonType === "equals") {
-            if (operator && previousInput && currentInput) {
-              const num1 = parseFloat(previousInput);
-              const num2 = parseFloat(currentInput);
-
-              let result;
-              switch (operator) {
-                case "+":
-                  result = num1 + num2;
-                  break;
-                case "−":
-                  result = num1 - num2;
-                  break;
-                case "×":
-                  result = num1 * num2;
-                  break;
-                case "÷":
-                  result = num2 === 0 ? "Error" : num1 / num2;
-                  break;
-              }
-              updateScreen(result);
-              currentInput = result.toString();
-              previousInput = "";
-              operator = "";
-            }
-          } else if (buttonType === "clear") {
-            currentInput = "";
-            previousInput = "";
-            operator = "";
-            updateScreen("0");
-          }
-        });
-      });
-    });
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>
 
@@ -265,317 +84,369 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Simple Calculator</title>
-  <style>
-    /* Basic CSS for styling the Calculator Web App */
-    body {
-      font-family: Arial, sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-      background-color: #f0f0f0;
-    }
-
-    .calculator {
-      width: 300px;
-      background-color: #fff;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    }
-
-    .screen {
-      width: 100%;
-      height: 70px;
-      background-color: #222;
-      color: #fff;
-      text-align: right;
-      line-height: 70px;
-      font-size: 2em;
-      padding: 0 10px;
-    }
-
-    .buttons {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 5px;
-      padding: 10px;
-    }
-
-    button {
-      height: 50px;
-      font-size: 1.2em;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-
-    .number {
-      background-color: #e0e0e0;
-    }
-
-    .operator {
-      background-color: #ff9500;
-      color: white;
-    }
-
-    .clear {
-      background-color: #ff3b30;
-      color: white;
-    }
-
-    .equals {
-      background-color: #34c759;
-      color: white;
-      grid-column: span 4;
-      height: 60px;
-    }
-  </style>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <div class="calculator">
-    <div class="screen" id="screen">0</div>
+    <div id="display" class="display">0</div>
     <div class="buttons">
-      <!-- Number Buttons -->
-      <button class="number">7</button>
-      <button class="number">8</button>
-      <button class="number">9</button>
-      <button class="operator">÷</button>
-      <button class="number">4</button>
-      <button class="number">5</button>
-      <button class="number">6</button>
-      <button class="operator">×</button>
-      <button class="number">1</button>
-      <button class="number">2</button>
-      <button class="number">3</button>
-      <button class="operator">−</button>
-      <button class="clear">C</button>
-      <button class="number">0</button>
-      <button class="operator">+</button>
-      <button class="equals">=</button>
+      <button onclick="clearDisplay()" class="btn-clear">C</button>
+      <button onclick="backspace()" class="btn-backspace">←</button>
+      <button onclick="appendOperator('/')" class="btn-operator">÷</button>
+      <button onclick="appendOperator('*')" class="btn-operator">×</button>
+      
+      <button onclick="appendNumber('7')" class="btn-number">7</button>
+      <button onclick="appendNumber('8')" class="btn-number">8</button>
+      <button onclick="appendNumber('9')" class="btn-number">9</button>
+      <button onclick="appendOperator('-')" class="btn-operator">−</button>
+      
+      <button onclick="appendNumber('4')" class="btn-number">4</button>
+      <button onclick="appendNumber('5')" class="btn-number">5</button>
+      <button onclick="appendNumber('6')" class="btn-number">6</button>
+      <button onclick="appendOperator('+')" class="btn-operator">+</button>
+      
+      <button onclick="appendNumber('1')" class="btn-number">1</button>
+      <button onclick="appendNumber('2')" class="btn-number">2</button>
+      <button onclick="appendNumber('3')" class="btn-number">3</button>
+      <button onclick="calculate()" class="btn-equal">=</button>
+      
+      <button onclick="appendNumber('0')" class="btn-number zero">0</button>
+      <button onclick="appendDecimal()" class="btn-number">.</button>
     </div>
   </div>
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const screen = document.getElementById("screen");
-      let currentInput = "";
-      let previousInput = "";
-      let operator = "";
-
-      // Function to update the calculator screen
-      const updateScreen = (value) => {
-        screen.textContent = value;
-      };
-
-      // Adding event listeners to all buttons
-      const buttons = document.querySelectorAll("button");
-      buttons.forEach((button) => {
-        button.addEventListener("click", () => {
-          const buttonType = button.className.split(' ')[0];
-          const buttonValue = button.textContent;
-
-          if (buttonType === "number") {
-            currentInput += buttonValue;
-            updateScreen(currentInput);
-          } else if (buttonType === "operator") {
-            operator = buttonValue;
-            previousInput = currentInput;
-            currentInput = "";
-          } else if (buttonType === "equals") {
-            if (operator && previousInput && currentInput) {
-              const num1 = parseFloat(previousInput);
-              const num2 = parseFloat(currentInput);
-              let result;
-
-              switch (operator) {
-                case "+":
-                  result = num1 + num2;
-                  break;
-                case "−":
-                  result = num1 - num2;
-                  break;
-                case "×":
-                  result = num1 * num2;
-                  break;
-                case "÷":
-                  result = num2 === 0 ? "Error" : num1 / num2;
-                  break;
-              }
-              updateScreen(result);
-              currentInput = result.toString();
-              previousInput = "";
-              operator = "";
-            }
-          } else if (buttonType === "clear") {
-            currentInput = "";
-            previousInput = "";
-            operator = "";
-            updateScreen("0");
-          }
-        });
-      });
-    });
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>
 
-[code] 
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+
+.calculator {
+  width: 320px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+}
+
+.display {
+  background-color: #222;
+  color: #fff;
+  font-size: 2.5em;
+  text-align: right;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.buttons {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  padding: 10px;
+}
+
+button {
+  font-size: 1.2em;
+  padding: 20px;
+  background-color: #f2f2f2;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+button:active {
+  transform: scale(0.95);
+}
+
+button:hover {
+  background-color: #ddd;
+}
+
+.btn-operator {
+  background-color: #ff9f43;
+  color: #fff;
+}
+
+.btn-equal {
+  background-color: #54a0ff;
+  color: #fff;
+}
+
+.btn-clear, .btn-backspace {
+  color: #ff6b6b;
+}
+
+.zero {
+  grid-column: span 2;
+}
+</style>
+
+<script>
+let display = document.getElementById("display");
+let currentInput = "0";
+let shouldResetDisplay = false;
+
+// Function to append numbers
+function appendNumber(number) {
+  if (shouldResetDisplay) {
+    currentInput = number;
+    shouldResetDisplay = false;
+  } else {
+    currentInput = currentInput === "0" ? number : currentInput + number;
+  }
+  updateDisplay();
+}
+
+// Function to append operators
+function appendOperator(operator) {
+  if (shouldResetDisplay) {
+    currentInput = display.textContent + operator;
+    shouldResetDisplay = false;
+  } else {
+    if (/[+\-*/]$/.test(currentInput)) {
+      currentInput = currentInput.slice(0, -1) + operator; // Replace last operator
+    } else {
+      currentInput += operator;
+    }
+  }
+  updateDisplay();
+}
+
+// Function to append decimal
+function appendDecimal() {
+  if (shouldResetDisplay) return;
+  if (!currentInput.includes(".")) {
+    currentInput += ".";
+    updateDisplay();
+  }
+}
+
+// Function to clear display
+function clearDisplay() {
+  currentInput = "0";
+  updateDisplay();
+}
+
+// Function to delete the last character
+function backspace() {
+  currentInput = currentInput.slice(0, -1);
+  if (currentInput === "") {
+    currentInput = "0";
+  }
+  updateDisplay();
+}
+
+// Function to calculate result
+function calculate() {
+  try {
+    currentInput = eval(currentInput.replaceAll("×", "*").replaceAll("÷", "/")).toString();
+    shouldResetDisplay = true;
+    updateDisplay();
+  } catch (e) {
+    currentInput = "Error";
+    updateDisplay();
+    shouldResetDisplay = true;
+  }
+}
+
+// Function to update display
+function updateDisplay() {
+  display.textContent = currentInput;
+}
+</script>
+
+[...] 
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Simple Calculator</title>
-  <style>
-    /* Basic CSS for styling the Calculator Web App */
-    body {
-      font-family: Arial, sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-      background-color: #f0f0f0;
-    }
-
-    .calculator {
-      width: 300px;
-      background-color: #fff;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    }
-
-    .screen {
-      width: 100%;
-      height: 70px;
-      background-color: #222;
-      color: #fff;
-      text-align: right;
-      line-height: 70px;
-      font-size: 2em;
-      padding: 0 10px;
-    }
-
-    .buttons {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 5px;
-      padding: 10px;
-    }
-
-    button {
-      height: 50px;
-      font-size: 1.2em;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-
-    .number {
-      background-color: #e0e0e0;
-    }
-
-    .operator {
-      background-color: #ff9500;
-      color: white;
-    }
-
-    .clear {
-      background-color: #ff3b30;
-      color: white;
-    }
-
-    .equals {
-      background-color: #34c759;
-      color: white;
-      grid-column: span 4;
-      height: 60px;
-    }
-  </style>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <div class="calculator">
-    <div class="screen" id="screen">0</div>
+    <div id="display" class="display">0</div>
     <div class="buttons">
-      <!-- Number Buttons -->
-      <button class="number">7</button>
-      <button class="number">8</button>
-      <button class="number">9</button>
-      <button class="operator">÷</button>
-      <button class="number">4</button>
-      <button class="number">5</button>
-      <button class="number">6</button>
-      <button class="operator">×</button>
-      <button class="number">1</button>
-      <button class="number">2</button>
-      <button class="number">3</button>
-      <button class="operator">−</button>
-      <button class="clear">C</button>
-      <button class="number">0</button>
-      <button class="operator">+</button>
-      <button class="equals">=</button>
+      <button onclick="clearDisplay()" class="btn-clear">C</button>
+      <button onclick="backspace()" class="btn-backspace">←</button>
+      <button onclick="appendOperator('/')" class="btn-operator">÷</button>
+      <button onclick="appendOperator('*')" class="btn-operator">×</button>
+      
+      <button onclick="appendNumber('7')" class="btn-number">7</button>
+      <button onclick="appendNumber('8')" class="btn-number">8</button>
+      <button onclick="appendNumber('9')" class="btn-number">9</button>
+      <button onclick="appendOperator('-')" class="btn-operator">−</button>
+      
+      <button onclick="appendNumber('4')" class="btn-number">4</button>
+      <button onclick="appendNumber('5')" class="btn-number">5</button>
+      <button onclick="appendNumber('6')" class="btn-number">6</button>
+      <button onclick="appendOperator('+')" class="btn-operator">+</button>
+      
+      <button onclick="appendNumber('1')" class="btn-number">1</button>
+      <button onclick="appendNumber('2')" class="btn-number">2</button>
+      <button onclick="appendNumber('3')" class="btn-number">3</button>
+      <button onclick="calculate()" class="btn-equal">=</button>
+      
+      <button onclick="appendNumber('0')" class="btn-number zero">0</button>
+      <button onclick="appendDecimal()" class="btn-number">.</button>
     </div>
   </div>
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const screen = document.getElementById("screen");
-      let currentInput = "";
-      let previousInput = "";
-      let operator = "";
-
-      // Function to update the calculator screen
-      const updateScreen = (value) => {
-        screen.textContent = value;
-      };
-
-      // Adding event listeners to all buttons
-      const buttons = document.querySelectorAll("button");
-      buttons.forEach((button) => {
-        button.addEventListener("click", () => {
-          const buttonType = button.className.split(' ')[0];
-          const buttonValue = button.textContent;
-
-          if (buttonType === "number") {
-            currentInput += buttonValue;
-            updateScreen(currentInput);
-          } else if (buttonType === "operator") {
-            operator = buttonValue;
-            previousInput = currentInput;
-            currentInput = "";
-          } else if (buttonType === "equals") {
-            if (operator && previousInput && currentInput) {
-              const num1 = parseFloat(previousInput);
-              const num2 = parseFloat(currentInput);
-              let result;
-
-              switch (operator) {
-                case "+":
-                  result = num1 + num2;
-                  break;
-                case "−":
-                  result = num1 - num2;
-                  break;
-                case "×":
-                  result = num1 * num2;
-                  break;
-                case "÷":
-                  result = num2 === 0 ? "Error" : num1 / num2;
-                  break;
-              }
-              updateScreen(result);
-              currentInput = result.toString();
-              previousInput = "";
-              operator = "";
-            }
-          } else if (buttonType === "clear") {
-            currentInput = "";
-            previousInput = "";
-            operator = "";
-            updateScreen("0");
-          }
-        });
-      });
-    });
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+
+.calculator {
+  width: 320px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+}
+
+.display {
+  background-color: #222;
+  color: #fff;
+  font-size: 2.5em;
+  text-align: right;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.buttons {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  padding: 10px;
+}
+
+button {
+  font-size: 1.2em;
+  padding: 20px;
+  background-color: #f2f2f2;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+button:active {
+  transform: scale(0.95);
+}
+
+button:hover {
+  background-color: #ddd;
+}
+
+.btn-operator {
+  background-color: #ff9f43;
+  color: #fff;
+}
+
+.btn-equal {
+  background-color: #54a0ff;
+  color: #fff;
+}
+
+.btn-clear, .btn-backspace {
+  color: #ff6b6b;
+}
+
+.zero {
+  grid-column: span 2;
+}
+</style>
+
+<script>
+let display = document.getElementById("display");
+let currentInput = "0";
+let shouldResetDisplay = false;
+
+// Function to append numbers
+function appendNumber(number) {
+  if (shouldResetDisplay) {
+    currentInput = number;
+    shouldResetDisplay = false;
+  } else {
+    currentInput = currentInput === "0" ? number : currentInput + number;
+  }
+  updateDisplay();
+}
+
+// Function to append operators
+function appendOperator(operator) {
+  if (shouldResetDisplay) {
+    currentInput = display.textContent + operator;
+    shouldResetDisplay = false;
+  } else {
+    if (/[+\-*/]$/.test(currentInput)) {
+      currentInput = currentInput.slice(0, -1) + operator; // Replace last operator
+    } else {
+      currentInput += operator;
+    }
+  }
+  updateDisplay();
+}
+
+// Function to append decimal
+function appendDecimal() {
+  if (shouldResetDisplay) return;
+  if (!currentInput.includes(".")) {
+    currentInput += ".";
+    updateDisplay();
+  }
+}
+
+// Function to clear display
+function clearDisplay() {
+  currentInput = "0";
+  updateDisplay();
+}
+
+// Function to delete the last character
+function backspace() {
+  currentInput = currentInput.slice(0, -1);
+  if (currentInput === "") {
+    currentInput = "0";
+  }
+  updateDisplay();
+}
+
+// Function to calculate result
+function calculate() {
+  try {
+    currentInput = eval(currentInput.replaceAll("×", "*").replaceAll("÷", "/")).toString();
+    shouldResetDisplay = true;
+    updateDisplay();
+  } catch (e) {
+    currentInput = "Error";
+    updateDisplay();
+    shouldResetDisplay = true;
+  }
+}
+
+// Function to update display
+function updateDisplay() {
+  display.textContent = currentInput;
+}
+</script>

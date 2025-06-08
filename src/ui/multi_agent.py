@@ -33,7 +33,7 @@ class ApprovalTerminationStrategy(TerminationStrategy):
         for message in history:
             if (
                 message.role == "assistant"
-                and "READY FOR USER APPROVAL" in message.content.upper()
+                and "APPROVED" in message.content.upper()
             ):
                 return True
         return False
