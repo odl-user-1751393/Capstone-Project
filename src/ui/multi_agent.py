@@ -63,6 +63,14 @@ def push_code():
     else:
         subprocess.run(["bash", "push_to_github.sh"], check=True)
 
+# === Pushing to repository after APPROVED ===
+def finalize_approval_and_push(messages):
+    html_code = extract_html_code_from_messages(messages)
+    if html_code.strip():
+        save_html_to_file(html_code)
+        push_code()
+    print("✅ Code saved and pushed to GitHub!")
+
 # === Main Multi-Agent Logic ===
 async def run_multi_agent(user_input: str):
     kernel = Kernel()
@@ -135,17 +143,16 @@ async def run_multi_agent(user_input: str):
             ready_for_approval = True
             break  # stop the loop here and wait for actual user input
 
-    # After termination condition is met (ApprovalTerminationStrategy triggers)
+            # After termination condition is met (ApprovalTerminationStrategy triggers)
     if ready_for_approval:
-        print("\n💬 Awaiting USER APPROVAL... (type 'APPROVED' to continue)")
-        user_approval = input(">>> ").strip().upper()
-        if user_approval == "APPROVED":
-            html_code = extract_html_code_from_messages(messages)
-            if html_code.strip():
-                save_html_to_file(html_code)
-                push_code()  # call the helper
-            print("✅ Code saved and pushed to GitHub!")
-        else:
-            print("❌ Approval not received. Aborting.")
+        # Instead of waiting for input here, just return that approval is required
+        return {
+            "messages": messages,
+            "ready_for_approval": True
+        }
 
-    return messages
+    # If no approval needed, just return messages
+    return {
+        "messages": messages,
+        "ready_for_approval": False
+    }
